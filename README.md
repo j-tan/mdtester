@@ -1,3 +1,3 @@
 mdtester
 ========
-Testing script to check the Metadata of SP's in the Federation.
+Testing script to check the Federation SP's metadata updating.
