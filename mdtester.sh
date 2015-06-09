@@ -1,6 +1,7 @@
 #!/bin/bash
 
 entityid="https://test-sp.test.aaf.edu.au/idp/shibboleth"
+md_test_url="https://ds.test.aaf.edu.au/distribution/metadata/metadata.aaf.signed.complete.xml"
 
 usage() {
   printf "Usage: mdtester.sh [--entityid ENTITYID]\n"
@@ -24,3 +25,6 @@ while [ "$1" != "" ]; do
       ;;
   esac
 done
+
+# download the metadata file
+curl "$md_test_url" --silent --output ./AAF-metadata.xml
