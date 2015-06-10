@@ -1,10 +1,11 @@
 #!/bin/bash
 
+federation=""
 entityid="https://test-sp.test.aaf.edu.au/idp/shibboleth"
 md_test_url="https://ds.test.aaf.edu.au/distribution/metadata/metadata.aaf.signed.complete.xml"
 
 usage() {
-  printf "Usage: mdtester.sh [--entityid ENTITYID]\n"
+  printf "Usage: mdtester.sh --federation [test|prod]\n"
 }
 
 if [ "$#" -gt 2 ]; then
@@ -14,9 +15,14 @@ fi
 
 while [ "$1" != "" ]; do
   case $1 in
-    --entityid )
+    --federation )
       shift
-      entityid="$1"
+      if [ "$1" == "test" ] || [ "$1" == "prod" ]; then
+        federation="$1"
+      else
+        usage
+        exit 1
+      fi
       ;;
     * )
       printf "Unknown argument '$1'\n"
