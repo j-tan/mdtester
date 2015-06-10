@@ -38,6 +38,6 @@ grep DiscoveryResponse ./AAF-metadata.xml | awk -F"Location=" '{print $2}' \
   elif [[ "$line" =~ Login$ ]]; then
     url="$line?entityID=$entityid"
   else
-    url="$(sed 's:/[^/]*$::' <<< "$line")?entityID=$entityid"
+    url="$(sed 's:/[^/]*$::' <<< "$line")/Login?entityID=$entityid"
   fi
 done
