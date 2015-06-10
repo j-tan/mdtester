@@ -1,7 +1,8 @@
 #!/bin/bash
 
 federation=""
-entityid="https://test-sp.test.aaf.edu.au/idp/shibboleth"
+test_entityid="https://test-sp.test.aaf.edu.au/idp/shibboleth"
+prod_entityid="https://test-sp.aaf.edu.au/idp/shibboleth"
 md_test_url="https://ds.test.aaf.edu.au/distribution/metadata/metadata.aaf.signed.complete.xml"
 md_prod_url="https://ds.aaf.edu.au/distribution/metadata/metadata.aaf.signed.complete.xml"
 
@@ -38,8 +39,10 @@ done
 md_filename="AAF-$federation-metadata.xml"
 if [ "$federation" == "test" ]; then
   md_url="$md_test_url"
+  entityid="$test_entityid"
 else
   md_url="$md_prod_url"
+  entityid="$prod_entityid"
 fi
 
 # download the metadata file if it doesn't exist
