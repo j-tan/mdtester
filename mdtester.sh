@@ -8,7 +8,7 @@ usage() {
   printf "Usage: mdtester.sh --federation [test|prod]\n"
 }
 
-if [ "$#" -gt 2 ]; then
+if [ "$#" -eq 0 ] || [ "$#" -gt 2 ]; then
   usage
   exit 1
 fi
