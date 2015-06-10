@@ -1,4 +1,4 @@
-@test "invalid arguments provided" {
+@test "invalid federation option" {
   run ../mdtester.sh --federation fake
   [ "$status" -eq 1 ]
   [ "$output" = "Usage: mdtester.sh --federation [test|prod]" ]
