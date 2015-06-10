@@ -43,11 +43,5 @@ grep DiscoveryResponse ./AAF-metadata.xml | awk -F"Location=" '{print $2}' \
   output=$(curl -m 20 -skL -w "%{http_code} %{url_effective}\\n" "$url" -o /dev/null)
   echo "$output"
   status_code=$(awk '{print $1}' <<< "$output")
-
-  # categorize based on error codes
-  case $status_code in
-    000|302|404|500 )
-      echo "$output" >> "$status_code.log"
-      ;;
-  esac
+  echo "$output" >> "$status_code.log"
 done
