@@ -4,6 +4,12 @@
   [ "$output" = "Usage: mdtester.sh --federation [test|prod]" ]
 }
 
+@test "no federation option" {
+  run ../mdtester.sh --federation
+  [ "$status" -eq 1 ]
+  [ "$output" = "Usage: mdtester.sh --federation [test|prod]" ]
+}
+
 @test "too many arguments provided" {
   run ../mdtester.sh --federation https://fake.com --fakeinput
   [ "$status" -eq 1 ]
