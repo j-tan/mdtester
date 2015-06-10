@@ -1,6 +1,7 @@
 #!/bin/bash
 
 entityid="https://test-sp.test.aaf.edu.au/idp/shibboleth"
+md_test_url="https://ds.test.aaf.edu.au/distribution/metadata/metadata.aaf.signed.complete.xml"
 
 usage() {
   printf "Usage: mdtester.sh [--entityid ENTITYID]\n"
@@ -23,4 +24,20 @@ while [ "$1" != "" ]; do
       exit 1
       ;;
   esac
+done
+
+# download the metadata file if it doesn't exist
+if [ ! -e ./AAF-metadata.xml ]; then
+  curl "$md_test_url" --silent --output ./AAF-metadata.xml
+fi
+
+grep DiscoveryResponse ./AAF-metadata.xml | awk -F"Location=" '{print $2}' \
+| awk '{print $1}' | tr -d '"' | while read line; do
+  if [[ "$line" =~ DS$ ]]; then
+    url="${line/%DS/Login}?entityID=$entityid"
+  elif [[ "$line" =~ Login$ ]]; then
+    url="$line?entityID=$entityid"
+  else
+    url="$(sed 's:/[^/]*$::' <<< "$line")?entityID=$entityid"
+  fi
 done
