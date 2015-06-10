@@ -26,5 +26,18 @@ while [ "$1" != "" ]; do
   esac
 done
 
-# download the metadata file
-curl "$md_test_url" --silent --output ./AAF-metadata.xml
+# download the metadata file if it doesn't exist
+if [ ! -e ./AAF-metadata.xml ]; then
+  curl "$md_test_url" --silent --output ./AAF-metadata.xml
+fi
+
+grep DiscoveryResponse ./AAF-metadata.xml | awk -F"Location=" '{print $2}' \
+| awk '{print $1}' | tr -d '"' | while read line; do
+  if [[ "$line" =~ DS$ ]]; then
+    url="${line/%DS/Login}?entityID=$entityid"
+  elif [[ "$line" =~ Login$ ]]; then
+    url="$line?entityID=$entityid"
+  else
+    url="$(sed 's:/[^/]*$::' <<< "$line")?entityID=$entityid"
+  fi
+done
