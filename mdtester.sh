@@ -31,14 +31,23 @@ while [ "$1" != "" ]; do
       exit 1
       ;;
   esac
+  shift
 done
 
-# download the metadata file if it doesn't exist
-if [ ! -e ./AAF-metadata.xml ]; then
-  curl "$md_test_url" --silent --output ./AAF-metadata.xml
+# set variables depending on federation
+md_filename="AAF-$federation-metadata.xml"
+if [ "$federation" == "test" ]; then
+  md_url="$md_test_url"
+else
+  md_url="$md_prod_url"
 fi
 
-grep DiscoveryResponse ./AAF-metadata.xml | awk -F"Location=" '{print $2}' \
+# download the metadata file if it doesn't exist
+if [ ! -e ./"$md_filename" ]; then
+  curl "$md_url" --silent --output ./"$md_filename"
+fi
+
+grep DiscoveryResponse ./"$md_filename" | awk -F"Location=" '{print $2}' \
 | awk '{print $1}' | tr -d '"' | while read line; do
   if [[ "$line" =~ DS$ ]]; then
     url="${line/%DS/Login}?entityID=$entityid"
