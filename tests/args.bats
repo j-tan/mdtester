@@ -1,3 +1,9 @@
+@test "invalid arguments provided" {
+  run ../mdtester.sh --federation fake
+  [ "$status" -eq 1 ]
+  [ "$output" = "Usage: mdtester.sh --federation [test|prod]" ]
+}
+
 @test "too many arguments provided" {
   run ../mdtester.sh --federation https://fake.com --fakeinput
   [ "$status" -eq 1 ]
