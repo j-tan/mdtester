@@ -10,6 +10,12 @@
   [ "$output" = "Usage: mdtester.sh --federation [test|prod]" ]
 }
 
+@test "no arguments provided" {
+  run ../mdtester.sh
+  [ "$status" -eq 1 ]
+  [ "$output" = "Usage: mdtester.sh --federation [test|prod]" ]
+}
+
 @test "too many arguments provided" {
   run ../mdtester.sh --federation https://fake.com --fakeinput
   [ "$status" -eq 1 ]
