@@ -40,4 +40,5 @@ grep DiscoveryResponse ./AAF-metadata.xml | awk -F"Location=" '{print $2}' \
   else
     url="$(sed 's:/[^/]*$::' <<< "$line")/Login?entityID=$entityid"
   fi
+  curl -skL -w "%{http_code} %{url_effective}\\n" "$url" -o /dev/null
 done
