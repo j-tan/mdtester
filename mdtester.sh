@@ -3,6 +3,7 @@
 federation=""
 entityid="https://test-sp.test.aaf.edu.au/idp/shibboleth"
 md_test_url="https://ds.test.aaf.edu.au/distribution/metadata/metadata.aaf.signed.complete.xml"
+md_prod_url="https://ds.aaf.edu.au/distribution/metadata/metadata.aaf.signed.complete.xml"
 
 usage() {
   printf "Usage: mdtester.sh --federation [test|prod]\n"
