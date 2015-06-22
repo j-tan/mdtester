@@ -1,22 +1,30 @@
 #!/bin/bash
 
-entityid="https://test-sp.test.aaf.edu.au/idp/shibboleth"
+federation=""
+test_entityid="https://test-sp.test.aaf.edu.au/idp/shibboleth"
+prod_entityid="https://test-sp.aaf.edu.au/idp/shibboleth"
 md_test_url="https://ds.test.aaf.edu.au/distribution/metadata/metadata.aaf.signed.complete.xml"
+md_prod_url="https://ds.aaf.edu.au/distribution/metadata/metadata.aaf.signed.complete.xml"
 
 usage() {
-  printf "Usage: mdtester.sh [--entityid ENTITYID]\n"
+  printf "Usage: mdtester.sh --federation [test|prod]\n"
 }
 
-if [ "$#" -gt 2 ]; then
+if [ "$#" -eq 0 ] || [ "$#" -gt 2 ]; then
   usage
   exit 1
 fi
 
 while [ "$1" != "" ]; do
   case $1 in
-    --entityid )
+    --federation )
       shift
-      entityid="$1"
+      if [ "$1" == "test" ] || [ "$1" == "prod" ]; then
+        federation="$1"
+      else
+        usage
+        exit 1
+      fi
       ;;
     * )
       printf "Unknown argument '$1'\n"
@@ -24,14 +32,25 @@ while [ "$1" != "" ]; do
       exit 1
       ;;
   esac
+  shift
 done
 
-# download the metadata file if it doesn't exist
-if [ ! -e ./AAF-metadata.xml ]; then
-  curl "$md_test_url" --silent --output ./AAF-metadata.xml
+# set variables depending on federation
+md_filename="AAF-$federation-metadata.xml"
+if [ "$federation" == "test" ]; then
+  md_url="$md_test_url"
+  entityid="$test_entityid"
+else
+  md_url="$md_prod_url"
+  entityid="$prod_entityid"
 fi
 
-grep DiscoveryResponse ./AAF-metadata.xml | awk -F"Location=" '{print $2}' \
+# download the metadata file if it doesn't exist
+if [ ! -e ./"$md_filename" ]; then
+  curl "$md_url" --silent --output ./"$md_filename"
+fi
+
+grep DiscoveryResponse ./"$md_filename" | awk -F"Location=" '{print $2}' \
 | awk '{print $1}' | tr -d '"' | while read line; do
   if [[ "$line" =~ DS$ ]]; then
     url="${line/%DS/Login}?entityID=$entityid"
